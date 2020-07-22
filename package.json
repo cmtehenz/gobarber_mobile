@@ -1,5 +1,5 @@
 {
-  "name": "appgobarber",
+  "name": "com.br.modery.gobarber",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -27,6 +27,7 @@
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^1.0.0",
     "react-native-screens": "^2.7.0",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-vector-icons": "^6.6.0",
     "styled-components": "^5.1.0",
     "yup": "^0.28.5"
