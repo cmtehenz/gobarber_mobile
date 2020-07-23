@@ -62,7 +62,12 @@ const Dashboard: React.FC = () => {
         </HeaderTitle>
 
         <ProfileButton onPress={navigateToProfile}>
-          <UserAvatar source={{ uri: user.avatar_url }} />
+          <UserAvatar
+            source={{
+              uri:
+                user.avatar_url || `https://api.adorable.io/avatars/${user.id}`,
+            }}
+          />
         </ProfileButton>
       </Header>
 
@@ -76,7 +81,13 @@ const Dashboard: React.FC = () => {
           <ProviderContainer
             onPress={() => navigateToCreateAppointment(item.id)}
           >
-            <ProviderAvatar source={{ uri: item.avatar_url }} />
+            <ProviderAvatar
+              source={{
+                uri:
+                  item.avatar_url ||
+                  `https://api.adorable.io/avatars/${item.id}`,
+              }}
+            />
             <ProviderInfo>
               <ProviderName>{item.name}</ProviderName>
 
