@@ -25,6 +25,7 @@ import Input from '../../components/Input';
 import {
   Container,
   Title,
+  SectionBt,
   ForgotPassword,
   ForgotPasswordText,
   CreateAccountButton,
@@ -115,10 +116,13 @@ const SignIn: React.FC = () => {
                 returnKeyType="send"
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
+              <SectionBt>
+                <Button onPress={() => formRef.current?.submitForm()}>
+                  Entrar
+                </Button>
 
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Entrar
-              </Button>
+              </SectionBt>
+             
             </Form>
             <ForgotPassword onPress={() => navigation.navigate('SignUp')}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
