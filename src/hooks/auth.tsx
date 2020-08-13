@@ -1,12 +1,19 @@
 import React, {
   createContext,
   useCallback,
-  useEffect,
   useState,
   useContext,
+  useEffect,
 } from 'react';
+
 import AsyncStorage from '@react-native-community/async-storage';
+
 import api from '../services/api';
+
+interface SignInCredentials {
+  email: string;
+  password: string;
+}
 
 interface User {
   id: string;
@@ -15,26 +22,22 @@ interface User {
   avatar_url: string;
 }
 
-interface AuthState {
-  token: string;
-  user: User;
-}
-
-interface SignInCredentials {
-  email: string;
-  password: string;
-}
-
 interface AuthContextData {
   user: User;
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  updateUser(user: User): Promise<void>;
+}
+
+interface AuthState {
+  token: string;
+  user: User;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC = ({ children }) => {
+const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>({} as AuthState);
   const [loading, setLoading] = useState(true);
 
@@ -44,13 +47,14 @@ export const AuthProvider: React.FC = ({ children }) => {
         '@GoBarber:token',
         '@GoBarber:user',
       ]);
+
       if (token[1] && user[1]) {
         api.defaults.headers.authorization = `Bearer ${token[1]}`;
         setData({ token: token[1], user: JSON.parse(user[1]) });
       }
+
       setLoading(false);
     }
-
     loadStoragedData();
   }, []);
 
@@ -77,19 +81,35 @@ export const AuthProvider: React.FC = ({ children }) => {
     setData({} as AuthState);
   }, []);
 
+  const updateUser = useCallback(
+    async (user: User) => {
+      await AsyncStorage.setItem('@GoBarber:user', JSON.stringify(user));
+
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [setData, data.token],
+  );
+
   return (
-    <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, loading, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export function useAuth(): AuthContextData {
+function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth must be used eithin a AuthProvider');
+    throw new Error('useAuth must be used withing a AuthProvider');
   }
 
   return context;
 }
+
+export { AuthProvider, useAuth };
